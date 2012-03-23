@@ -1,6 +1,9 @@
-xfuse = require('../lib/xfuse.js').XFuse
+XFuse = require('../lib/xfuse.js').XFuse
 
-client = new xfuse '46bb0a820d08bc7b1feeabce44e01beecb440253'
+postArgs = 
+    email : 'updated@email.com'
+
+client = new XFuse '46bb0a820d08bc7b1feeabce44e01beecb440253'
 
 exports['client is an Object']  = (test) ->
     test.expect 2
@@ -9,3 +12,20 @@ exports['client is an Object']  = (test) ->
     test.done()
     return
 
+exports['test get'] = (test) ->
+    test.expect 1
+    test.ok client.get '/' 
+    test.done()
+    return
+
+exports['test post'] = (test) ->
+    test.expect 1
+    test.ok client.post '/users/20', postArgs
+    test.done()
+    return
+
+exports['test put'] = (test) ->
+    test.expect 1
+    test.ok client.put '/users', putArgs
+    test.done()
+    return
