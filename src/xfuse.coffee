@@ -1,58 +1,118 @@
 https = require 'https'
 qs = require 'querystring'
 
-XFuse = (key) ->
-    if key == null
-        throw new Error 'XFuse needs a valid API Key'
-    else
-        this._key
+exports.version = '0.0.1'
 
-    doRequest = (path = '/', method = 'GET', args, callback) ->
-        
-        if path.charAt 0 != '/'
-            path = '/' + path
-        
-        path = path + '?' +  qs.stringify args
-        
-        options = 
-            host : 'mycompany.labs.memberfuse.com'
-            method : method
-            auth : this._key + ':'
-            path : path
-            headers : 
-                'Accept' : 'application/json'
+apiToken = null
+siteUrl = null
+apiUrl = '/api/rest/1.0'
 
-        request = https.request options, (res) ->
+class XFuse
+    constructor : (method, url, postData, callback) ->
+        if typeof callback == 'undefined'
+            callback = postData
+            postData = {}
+        url = apiUrl + @.cleanUrl url
+        @callback = callback || () -> return
+        @postData = postData
+
+        @options = @options || {}
+
+        @options.host = siteUrl
+        @options.auth = apiToken  + ':'
+        @options.method = method
+        @options.path    = url
+        
+        @[method.toLowerCase()]()
+
+        return @
+
+    cleanUrl : (url) ->
+        if url.charAt(0) != '/'
+            url = '/' + url
+        return url
+    end : (body) ->
+        if (body) 
+            try
+                json = JSON.parse body
+            catch e
+                err = 
+                    message : 'Error parsing json'
+                    exception : e
+        
+        if (!err && (json && json.error))
+            err = json.error
+        
+        @callback err, json
+        return
+
+    get : () ->
+        https.get @options, (res) =>
+            if res.statusCode != 200
+                this.callback 
+                    message : 'Request could not be interpreted by the server'
+                    exception : Error
+                , null
+                return
+            body = null
             res.setEncoding 'utf8'
-            body = []
             res.on 'data', (chunk) ->
-                body.push chunk
-            res.on 'end', () ->
-                try
-                    JSON.parse body.join ''
-                catch e
-                    data = null
-                    error = e
-            if data and data.error
-                callback data.error, null
-            else if data
-                callback null, data
-            else
-                callback error, null
-        request.on 'error', (error) ->
-            console.error error
-            callback error, null
+                body += chunk
+                return
+            res.on 'end', () =>
+                @end body
+                return
+            return
+        .on 'error', (e) =>
+            @callback e, null
+            console.error e.message
             return
         return
 
-    get = (path, callback) ->
-        doRequest path, 'GET', null, callback
+    post : () ->
         return
-    return
 
-if typeof exports != 'undefined' 
-    if typeof module != 'undefined' && module.exports
-        exports = module.exports = XFuse
-    exports.XFuse = XFuse
-else
-    this.XFuse = XFuse
+exports.get = (url, params, callback) ->
+    if typeof params == 'function'
+        callback = params
+        params = null
+
+    if typeof url != 'string'
+        return callback { message : 'Url must be a string' }, null
+
+    if params
+        url += '?' + qs.stringify params
+    
+    new XFuse 'GET', url, callback
+
+exports.post = (url, postData, callback) ->
+    if typeof url != 'string' 
+        return callback { message : 'Url must be a string' }, null
+
+    if typeof postData == 'function'
+        callback = postData
+        postData = {}
+
+    new XFuse 'POST', url, postData, callback
+
+exports.setOptions = (options) ->
+    if typeof options == 'object' 
+        @options = options
+    @
+
+exports.getOptions = () ->
+    @options || {}
+
+exports.setApiToken = (token) ->
+    apiToken = token
+    @
+
+exports.getApiToken = () ->
+    return apiToken
+
+exports.setSiteUrl = (url) ->
+    siteUrl = url
+    @
+
+exports.getSiteUrl = () ->
+    siteUrl
