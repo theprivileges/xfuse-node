@@ -1,7 +1,7 @@
 def run_all_tests
   print `clear`
   puts "Tests run #{Time.now.strftime('%Y-%m-%d %H:%M:%S')}"
-  puts `node tests/test.xfuse.js`
+  puts `node tests/test-xfuse.js`
 end
 
 run_all_tests
