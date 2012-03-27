@@ -1,0 +1,22 @@
+{
+  "author": "Luiz Lopes <@theprivileges> (http://wickeddeveloper.com)",
+  "name": "memberfuse-api",
+  "description": "a memberfuse api (xfuse) node module",
+  "version": "0.0.1",
+  "homepage": "http://www.memberfuse.com/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/theprivileges/memberfuse-api.git"
+  },
+  "main": "./index",
+  "scripts": {
+    "test": "node tests/test-xfuse.js"
+  },
+  "engines": {
+    "node": "~0.6.14"
+  },
+  "dependencies": {},
+  "devDependencies": {
+      "vows": "0.5.x"
+  }
+}
