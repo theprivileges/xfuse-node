@@ -32,7 +32,7 @@ class XFuse
             url = '/' + url
         return url
     end : (body) ->
-        if (body) 
+        if (body && typeof body == 'string') 
             try
                 json = JSON.parse body
             catch e
@@ -54,7 +54,7 @@ class XFuse
                     exception : Error
                 , null
                 return
-            body = null
+            body = ''
             res.setEncoding 'utf8'
             res.on 'data', (chunk) ->
                 body += chunk
@@ -65,7 +65,6 @@ class XFuse
             return
         .on 'error', (e) =>
             @callback e, null
-            console.error e.message
             return
         return
 
@@ -80,6 +79,12 @@ exports.get = (url, params, callback) ->
     if typeof url != 'string'
         return callback { message : 'Url must be a string' }, null
 
+    if apiToken == null
+        return callback { message : 'XFuse needs an API Token' }, null
+
+    if siteUrl == null
+        return callback { message : 'XFuse needs to know to know the address to the memberfuse site'}, null
+    
     if params
         url += '?' + qs.stringify params
     
