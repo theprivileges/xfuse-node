@@ -1,6 +1,7 @@
 {
   "author": "Luiz Lopes <@theprivileges> (http://wickeddeveloper.com)",
   "name": "memberfuse-api",
+  "private": true,
   "description": "a memberfuse api (xfuse) node module",
   "tags": ["memberfuse", "avectra", "xfuse", "social network", "restful"],
   "version": "0.0.5",
