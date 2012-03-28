@@ -1,5 +1,5 @@
 (function() {
-  var assert, events, siteUrl, token, vows, xfuse;
+  var assert, events, mfzSite, vows, xfuse, xfuseToken;
 
   xfuse = require('../index.js');
 
@@ -9,9 +9,9 @@
 
   assert = require('assert');
 
-  token = '46bb0a820d08bc7b1feeabce44e01beecb440253';
+  xfuseToken = '46bb0a820d08bc7b1feeabce44e01beecb440253';
 
-  siteUrl = 'mycompany.labs.memberfuse.com';
+  mfzSite = 'mycompany.labs.memberfuse.com';
 
   vows.describe("xfuse.test").addBatch({
     "Before we run anything": {
@@ -24,46 +24,53 @@
     }
   }).addBatch({
     "When accessing xfuse": {
+      topic: function() {
+        xfuse.setApiToken(null);
+        return xfuse.setsiteUrl(null);
+      },
       "with no api token": {
         "and looking for data": {
           topic: function() {
-            return xfuse.get("/", this.callback);
+            xfuse.get("/", this.callback);
           },
           "should get an error": function(err, res) {
-            return assert.include(res, "error");
+            assert.isNotNull(err);
+            return assert.include(err, "message");
           }
         }
-      },
-      "with an api token": {
-        topic: function() {
-          var promise;
-          promise = new events.EventEmitter();
-          xfuse.setApiToken(token);
-          xfuse.setSiteUrl(siteUrl);
-          xfuse.get("/", function(err, res) {
-            if (!res || res.error) {
-              promise.emit("error", err);
-              return console.error(err);
-            } else {
-              return promise.emit("success", res);
-            }
-          });
-          return promise;
-        },
-        /* Now we start doing some work
-        */
-        "response should have right resources": function(res, err) {
-          assert.isNull(err);
-          assert.include(res, "resources");
-        },
-        "and getting data from an user": {
-          topic: function() {
-            return xfuse.get("/user/20", this.callback);
-          },
-          "response should be valid": function(err, res) {
-            assert.isNull(err);
-            return assert.equal("20", res.user.id, "response id should be valid");
+      }
+    }
+  }).addBatch({
+    "with an api token": {
+      topic: function() {
+        var promise;
+        promise = new events.EventEmitter();
+        xfuse.setApiToken(xfuseToken);
+        xfuse.setSiteUrl(mfzSite);
+        xfuse.get("/", function(err, res) {
+          if (!res || res.error) {
+            return promise.emit("error", err);
+          } else {
+            return promise.emit("success", res);
           }
+        });
+        return promise;
+      },
+      /* Now we start doing some work
+      */
+      "response should have right resources": function(err, res) {
+        assert.isNull(err);
+        assert.include(res, "resources");
+      },
+      "and getting data from an user": {
+        topic: function() {
+          xfuse.get("/user/20", this.callback);
+        },
+        "response should be valid": function(err, res) {
+          assert.isNull(err);
+          assert.include(res, "user");
+          assert.include(res.user, "id");
+          return assert.equal('20', res.user.id, "user id should be valid");
         }
       }
     }
