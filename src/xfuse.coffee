@@ -9,7 +9,7 @@ apiUrl = '/api/rest/1.0'
 
 class XFuse
     constructor : (method, url, postData, callback) ->
-        if typeof callback == 'undefined'
+        if typeof postData == 'function'
             callback = postData
             postData = {}
         url = apiUrl + @.cleanUrl url
