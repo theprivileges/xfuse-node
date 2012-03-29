@@ -6,6 +6,15 @@ assert = require 'assert'
 xfuseToken = '46bb0a820d08bc7b1feeabce44e01beecb440253'
 mfzSite = 'mycompany.labs.memberfuse.com'
 
+putData =
+    firstname : 'Test'
+    lastname : 'User'
+
+postData = 
+    firstname : 'XFuse'
+    lastname : 'User'
+    email : 'xfuse@memberfuse.com'
+
 vows.describe("xfuse.test")
 .addBatch
     "Before we run anything" : 
@@ -53,4 +62,26 @@ vows.describe("xfuse.test")
                     assert.include res, "user"
                     assert.include res.user, "id"
                     assert.equal '20', res.user.id, "user id should be valid"
+            "updating an existing user" :
+                topic : () ->
+                    xfuse.put "/user/20", putData, @callback
+                    return
+                "response should be valid" : (err, res) ->
+                    assert.isNull err
+                    assert.include res, "user"
+                    assert.include res.user, "firstname"
+                    assert.include res.user, "lastname"
+                    assert.equal putData.firstname, res.user.firtname
+                    essert.equal putData.lastname, res.user.lastname
+            "inserting a new user" :
+                topic : () ->
+                    xfuse.post "/user", postData, @callback
+                    return
+                "should get the new user as a response" : (err, res) ->
+                    assert.isNull err
+                    assert.include res, "user"
+                    assert.include res.user, "id"
+                    assert.equal postData.firstname, res.user.firstname
+                    assert.equal postData.lastname, res.user.lastname
+                    assert.equal postData.email, res.use.email
 .export(module)

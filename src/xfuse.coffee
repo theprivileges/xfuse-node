@@ -71,6 +71,9 @@ class XFuse
     post : () ->
         return
 
+    put : () ->
+        return
+
 exports.get = (url, params, callback) ->
     if typeof params == 'function'
         callback = params
@@ -94,11 +97,19 @@ exports.post = (url, postData, callback) ->
     if typeof url != 'string' 
         return callback { message : 'Url must be a string' }, null
 
-    if typeof postData == 'function'
-        callback = postData
-        postData = {}
+    if typeof postData != 'object'
+        return callback { message : 'POST data must be in the form of an object' }, null
 
     new XFuse 'POST', url, postData, callback
+
+exports.put = (url, putData, callback) ->
+    if typeof url != 'string'
+        return callback { message : 'Url must be a string' }, null
+
+    if typeof putData != 'object'
+        return callback { message : 'PUT data must be in the form of an object' }, null
+
+    new XFuse 'PUT', url, putData, callback
 
 exports.setOptions = (options) ->
     if typeof options == 'object' 

@@ -1,5 +1,5 @@
 (function() {
-  var assert, events, mfzSite, vows, xfuse, xfuseToken;
+  var assert, events, mfzSite, postData, putData, vows, xfuse, xfuseToken;
 
   xfuse = require('../index.js');
 
@@ -12,6 +12,17 @@
   xfuseToken = '46bb0a820d08bc7b1feeabce44e01beecb440253';
 
   mfzSite = 'mycompany.labs.memberfuse.com';
+
+  putData = {
+    firstname: 'Test',
+    lastname: 'User'
+  };
+
+  postData = {
+    firstname: 'XFuse',
+    lastname: 'User',
+    email: 'xfuse@memberfuse.com'
+  };
 
   vows.describe("xfuse.test").addBatch({
     "Before we run anything": {
@@ -71,6 +82,32 @@
           assert.include(res, "user");
           assert.include(res.user, "id");
           return assert.equal('20', res.user.id, "user id should be valid");
+        }
+      },
+      "updating an existing user": {
+        topic: function() {
+          xfuse.put("/user/20", putData, this.callback);
+        },
+        "response should be valid": function(err, res) {
+          assert.isNull(err);
+          assert.include(res, "user");
+          assert.include(res.user, "firstname");
+          assert.include(res.user, "lastname");
+          assert.equal(putData.firstname, res.user.firtname);
+          return essert.equal(putData.lastname, res.user.lastname);
+        }
+      },
+      "inserting a new user": {
+        topic: function() {
+          xfuse.post("/user", postData, this.callback);
+        },
+        "should get the new user as a response": function(err, res) {
+          assert.isNull(err);
+          assert.include(res, "user");
+          assert.include(res.user, "id");
+          assert.equal(postData.firstname, res.user.firstname);
+          assert.equal(postData.lastname, res.user.lastname);
+          return assert.equal(postData.email, res.use.email);
         }
       }
     }
