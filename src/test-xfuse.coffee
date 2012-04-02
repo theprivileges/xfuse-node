@@ -1,3 +1,6 @@
+###
+Need to add test to delete test user
+###
 xfuse = require '../index.js'
 vows = require 'vows'
 events = require 'events'
@@ -9,11 +12,16 @@ mfzSite = 'mycompany.labs.memberfuse.com'
 putData =
     firstname : 'Amy'
     lastname : 'Smith'
+    external_id : Math.floor Math.random() * (100 - 19) + 19
 
 postData = 
     firstname : 'XFuse'
     lastname : 'User'
-    email : 'xfuse@memberfuse.com'
+    username : 'xfuse01@memberfuse.com'
+    organization : '164'
+    password : 'password1'
+    roles   : 
+        role : '51'
 
 vows.describe("xfuse.test")
 .addBatch
@@ -69,8 +77,6 @@ vows.describe("xfuse.test")
                 "response should be valid" : (err, res) ->
                     assert.isNull err
                     assert.include res, "user"
-                    assert.include res.user, "firstname"
-                    assert.include res.user, "lastname"
                     assert.equal putData.firstname, res.user.firtname
                     essert.equal putData.lastname, res.user.lastname
             "inserting a new user" :
@@ -83,5 +89,5 @@ vows.describe("xfuse.test")
                     assert.include res.user, "id"
                     assert.equal postData.firstname, res.user.firstname
                     assert.equal postData.lastname, res.user.lastname
-                    assert.equal postData.email, res.use.email
+                    assert.equal postData.username, res.user.username
 .export(module)
