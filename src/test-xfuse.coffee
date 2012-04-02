@@ -7,8 +7,8 @@ xfuseToken = '46bb0a820d08bc7b1feeabce44e01beecb440253'
 mfzSite = 'mycompany.labs.memberfuse.com'
 
 putData =
-    firstname : 'Test'
-    lastname : 'User'
+    firstname : 'Amy'
+    lastname : 'Smith'
 
 postData = 
     firstname : 'XFuse'

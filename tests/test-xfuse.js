@@ -14,8 +14,8 @@
   mfzSite = 'mycompany.labs.memberfuse.com';
 
   putData = {
-    firstname: 'Test',
-    lastname: 'User'
+    firstname: 'Amy',
+    lastname: 'Smith'
   };
 
   postData = {

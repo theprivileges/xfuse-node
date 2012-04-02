@@ -8,13 +8,14 @@ siteUrl = null
 apiUrl = '/api/rest/1.0'
 
 class XFuse
-    constructor : (method, url, postData, callback) ->
+    constructor : (method, url, postData = {}, callback = () -> return) ->
         if typeof postData == 'function'
             callback = postData
             postData = {}
+        
         url = apiUrl + @.cleanUrl url
-        @callback = callback || () -> return
-        @postData = postData
+        @callback = callback
+        @postData = JSON.stringify postData 
 
         @options = @options || {}
 
@@ -69,9 +70,43 @@ class XFuse
         return
 
     post : () ->
+        
+        req = https.request @options, (res) =>
+            body = ''
+            res.setEncoding 'utf8'
+            res.on 'data', (chunk) ->
+                body += chunk
+                return
+            res.on 'end', () =>
+                @end body
+                return
+            return
+        req.on 'error', (e) =>
+            @callback e, null
+            return
+        req.setHeader 'Content-Type', 'application/json'
+        req.setHeader 'Content-Length', @postData.length
+        req.end @postData, 'utf8'
         return
 
     put : () ->
+
+        req = https.request @options, (res) =>
+            body = ''
+            res.setEncoding 'utf8'
+            res.on 'data', (chunk) ->
+                body += chunk
+                return
+            res.on 'end', () =>
+                @end body
+                return
+            return
+        req.on 'error', (e) =>
+            @callback e, null
+            return
+        req.setHeader 'Content-Type', 'application/json'
+        req.setHeader 'Content-Length', @postData.length
+        req.end @postData, 'utf8'
         return
 
 exports.get = (url, params, callback) ->
