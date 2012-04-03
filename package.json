@@ -10,6 +10,10 @@
     "type": "git",
     "url": "git://github.com/theprivileges/memberfuse-api.git"
   },
+  "bugs": {
+      "url": "https://github.com/theprivileges/xfuse-node/issues",
+      "email": "llopes@avectra.com"
+  },
   "main": "./index",
   "scripts": {
     "test": "node tests/test-xfuse.js"
