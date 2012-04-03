@@ -6,6 +6,10 @@
   "tags": ["memberfuse", "avectra", "xfuse", "social network", "restful"],
   "version": "0.0.8",
   "homepage": "http://wiki.avectra.com/MemberFuse_API",
+  "licenses": [{
+      "type": "MIT",
+      "url": "https://github.com/theprivileges/xfuse-node/raw/master/LICENSE"
+  }],
   "contributors": [
     "Derek Gallo",
     "Daniel Smith",
