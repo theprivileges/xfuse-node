@@ -5,7 +5,7 @@
   "description": "a node module to interact with xfuse, the memberfuse api.",
   "tags": ["memberfuse", "avectra", "xfuse", "social network", "restful"],
   "version": "0.0.8",
-  "homepage": "http://www.memberfuse.com/",
+  "homepage": "http://wiki.avectra.com/MemberFuse_API",
   "repository": {
     "type": "git",
     "url": "git://github.com/theprivileges/memberfuse-api.git"
