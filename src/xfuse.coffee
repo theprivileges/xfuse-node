@@ -1,3 +1,6 @@
+###
+copyright (c) 2012 Avectra, Inc.
+###
 https = require 'https'
 qs = require 'querystring'
 
@@ -23,8 +26,13 @@ class XFuse
         @options.auth = apiToken  + ':'
         @options.method = method
         @options.path    = url
-        
-        @[method.toLowerCase()]()
+        ###
+        Have to do this because delete is a reserved operator
+        ###
+        if method.toLowerCase() == 'delete'
+            @del()
+        else
+            @[method.toLowerCase()]()
 
         return @
 
@@ -108,7 +116,21 @@ class XFuse
         req.setHeader 'Content-Length', @postData.length
         req.end @postData, 'utf8'
         return
+    del : () ->
 
+        req = https.request @options, (res) =>
+            body = ''
+            res.setEncoding 'utf8'
+            res.on 'data', (chunk) ->
+                body += chunk
+                return
+            res.on 'end', () =>
+                @end body
+                return
+        req.on 'error', (e) =>
+            @callback e, null
+            return
+        return
 exports.get = (url, params, callback) ->
     if typeof params == 'function'
         callback = params
@@ -145,6 +167,12 @@ exports.put = (url, putData, callback) ->
         return callback { message : 'PUT data must be in the form of an object' }, null
 
     new XFuse 'PUT', url, putData, callback
+
+exports.delete = (url, params, callback) ->
+    if typeof url != 'string'
+        return callback { message : 'Url must be a string'}, null
+    
+    new XFuse 'DELETE', url, callback
 
 exports.setOptions = (options) ->
     if typeof options == 'object' 

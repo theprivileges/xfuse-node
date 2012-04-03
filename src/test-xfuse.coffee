@@ -1,5 +1,5 @@
 ###
-Need to add test to delete test user
+copyright (c) 2012 Avectra, Inc.
 ###
 xfuse = require '../index.js'
 vows = require 'vows'
@@ -9,9 +9,9 @@ assert = require 'assert'
 xfuseToken = '46bb0a820d08bc7b1feeabce44e01beecb440253'
 mfzSite = 'mycompany.labs.memberfuse.com'
 
+testUser = ''
+
 putData =
-    firstname : 'Amy'
-    lastname : 'Smith'
     external_id : Math.floor Math.random() * (100 - 19) + 19
 
 postData = 
@@ -77,8 +77,7 @@ vows.describe("xfuse.test")
                 "response should be valid" : (err, res) ->
                     assert.isNull err
                     assert.include res, "user"
-                    assert.equal putData.firstname, res.user.firtname
-                    essert.equal putData.lastname, res.user.lastname
+                    assert.equal putData.external_id, res.user.external_id, "new external id should match"
             "inserting a new user" :
                 topic : () ->
                     xfuse.post "/user", postData, @callback
@@ -90,4 +89,22 @@ vows.describe("xfuse.test")
                     assert.equal postData.firstname, res.user.firstname
                     assert.equal postData.lastname, res.user.lastname
                     assert.equal postData.username, res.user.username
+                    ###
+                    Saving the id of the test user, so we can delete it on the next test
+                    ###
+                    testUser = res.user.id
+            "deleting test user" :
+                topic : () ->
+                    xfuse.del "/user" + testUser, @callback
+                    return
+                "should not get any errors" : (err, res) ->
+                    assert.isNull err
+                "and the user should no longer exist" :
+                    topic : () ->
+                        xfuse.get "/user" + testUser, @callback
+                        return
+                    "should get user doesn't exist" : (err, res) ->
+                        assert.include err, "error"
+                        assert.include err.error, "message"
+                        assert.include err.error, "error_id"
 .export(module)

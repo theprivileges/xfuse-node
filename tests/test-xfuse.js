@@ -1,10 +1,10 @@
 
 /*
-Need to add test to delete test user
+copyright (c) 2012 Avectra, Inc.
 */
 
 (function() {
-  var assert, events, mfzSite, postData, putData, vows, xfuse, xfuseToken;
+  var assert, events, mfzSite, postData, putData, testUser, vows, xfuse, xfuseToken;
 
   xfuse = require('../index.js');
 
@@ -18,9 +18,9 @@ Need to add test to delete test user
 
   mfzSite = 'mycompany.labs.memberfuse.com';
 
+  testUser = '';
+
   putData = {
-    firstname: 'Amy',
-    lastname: 'Smith',
     external_id: Math.floor(Math.random() * (100 - 19) + 19)
   };
 
@@ -102,8 +102,7 @@ Need to add test to delete test user
         "response should be valid": function(err, res) {
           assert.isNull(err);
           assert.include(res, "user");
-          assert.equal(putData.firstname, res.user.firtname);
-          return essert.equal(putData.lastname, res.user.lastname);
+          return assert.equal(putData.external_id, res.user.external_id, "new external id should match");
         }
       },
       "inserting a new user": {
@@ -116,7 +115,29 @@ Need to add test to delete test user
           assert.include(res.user, "id");
           assert.equal(postData.firstname, res.user.firstname);
           assert.equal(postData.lastname, res.user.lastname);
-          return assert.equal(postData.username, res.user.username);
+          assert.equal(postData.username, res.user.username);
+          /*
+                              Saving the id of the test user, so we can delete it on the next test
+          */
+          return testUser = res.user.id;
+        }
+      },
+      "deleting test user": {
+        topic: function() {
+          xfuse["delete"]("/user" + testUser, this.callback);
+        },
+        "should not get any errors": function(err, res) {
+          return assert.isNull(err);
+        },
+        "and the user should no longer exist": {
+          topic: function() {
+            xfuse.get("/user" + testUser, this.callback);
+          },
+          "should get user doesn't exist": function(err, res) {
+            assert.include(err, "error");
+            assert.include(err.error, "message");
+            return assert.include(err.error, "error_id");
+          }
         }
       }
     }
