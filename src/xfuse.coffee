@@ -1,7 +1,7 @@
 https = require 'https'
 qs = require 'querystring'
 
-exports.version = '0.0.5'
+exports.version = '0.0.8'
 
 apiToken = null
 siteUrl = null
