@@ -11,15 +11,20 @@ mfzSite = 'mycompany.labs.memberfuse.com'
 
 testUser = ''
 
+randUID = Math.floor Math.random() * 501
+
+###
+two ams ids can't be the same for a site
+###
 putData =
     external_id : Math.floor Math.random() * 101
 
 postData = 
     firstname : 'XFuse'
     lastname : 'User'
-    username : 'xfuse02@memberfuse.com'
+    username : 'xfuse' + randUID + '@memberfuse.com'
     organization : '164'
-    external_id : Math.floor Math.random() * 501
+    external_id : randUID
     password : 'password1'
     roles   : 
         role : '51'
@@ -96,14 +101,14 @@ vows.describe("xfuse.test")
                     testUser = res.user.id
             "deleting test user" :
                 topic : () ->
-                    xfuse.delete "/user" + testUser, @callback
+                    xfuse.delete "/user/" + testUser, @callback
                     return
                 "should not get any errors" : (err, res) ->
                     assert.isNull err
                     assert.include res, "success"
                 "and the user should no longer exist" :
                     topic : () ->
-                        xfuse.get "/user" + testUser, @callback
+                        xfuse.get "/user/" + testUser, @callback
                         return
                     "should get user doesn't exist" : (err, res) ->
                         assert.isNull res

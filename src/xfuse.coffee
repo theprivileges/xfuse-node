@@ -168,7 +168,7 @@ exports.put = (url, putData, callback) ->
 
     new XFuse 'PUT', url, putData, callback
 
-exports.delete = (url, params, callback) ->
+exports.delete = (url, callback) ->
     if typeof url != 'string'
         return callback { message : 'Url must be a string'}, null
     
