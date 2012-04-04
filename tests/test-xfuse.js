@@ -4,7 +4,7 @@ copyright (c) 2012 Avectra, Inc.
 */
 
 (function() {
-  var assert, events, mfzSite, postData, putData, testUser, vows, xfuse, xfuseToken;
+  var assert, events, mfzSite, postData, putData, randUID, testUser, vows, xfuse, xfuseToken;
 
   xfuse = require('../index.js');
 
@@ -20,15 +20,22 @@ copyright (c) 2012 Avectra, Inc.
 
   testUser = '';
 
+  randUID = Math.floor(Math.random() * 501);
+
+  /*
+  two ams ids can't be the same for a site
+  */
+
   putData = {
-    external_id: Math.floor(Math.random() * (100 - 19) + 19)
+    external_id: Math.floor(Math.random() * 101)
   };
 
   postData = {
     firstname: 'XFuse',
     lastname: 'User',
-    username: 'xfuse01@memberfuse.com',
+    username: 'xfuse' + randUID + '@memberfuse.com',
     organization: '164',
+    external_id: randUID,
     password: 'password1',
     roles: {
       role: '51'
@@ -124,16 +131,19 @@ copyright (c) 2012 Avectra, Inc.
       },
       "deleting test user": {
         topic: function() {
-          xfuse["delete"]("/user" + testUser, this.callback);
+          xfuse["delete"]("/user/" + testUser, this.callback);
         },
         "should not get any errors": function(err, res) {
-          return assert.isNull(err);
+          assert.isNull(err);
+          return assert.include(res, "success");
         },
         "and the user should no longer exist": {
           topic: function() {
-            xfuse.get("/user" + testUser, this.callback);
+            xfuse.get("/user/" + testUser, this.callback);
           },
           "should get user doesn't exist": function(err, res) {
+            assert.isNull(res);
+            assert.isNotNull(err);
             assert.include(err, "error");
             assert.include(err.error, "message");
             return assert.include(err.error, "error_id");
