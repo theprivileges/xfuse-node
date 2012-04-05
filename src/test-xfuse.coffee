@@ -36,11 +36,13 @@ vows.describe("xfuse.test")
             xfuse.setApiToken null
         "API Token should be null" : (xfuse) ->
             assert.isNull xfuse.getApiToken()
+            return
 .addBatch
     "When accessing xfuse" :
         topic : () ->
             xfuse.setApiToken null
             xfuse.setsiteUrl null
+            return
         "with no api token" :
             "and looking for data" :
                 topic : () ->
@@ -49,6 +51,7 @@ vows.describe("xfuse.test")
                 "should get an error" : (err, res) ->
                     assert.isNotNull err
                     assert.include err, "message"
+                    return
 .addBatch
     "with an api token" :
             topic : () ->
@@ -76,6 +79,7 @@ vows.describe("xfuse.test")
                     assert.include res, "user"
                     assert.include res.user, "id"
                     assert.equal '20', res.user.id, "user id should be valid"
+                    return
             "updating an existing user" :
                 topic : () ->
                     xfuse.put "/user/20", putData, @callback
@@ -84,6 +88,7 @@ vows.describe("xfuse.test")
                     assert.isNull err
                     assert.include res, "user"
                     assert.equal putData.external_id, res.user.external_id, "new external id should match"
+                    return
             "inserting a new user" :
                 topic : () ->
                     xfuse.post "/user", postData, @callback
@@ -99,6 +104,7 @@ vows.describe("xfuse.test")
                     Saving the id of the test user, so we can delete it on the next test
                     ###
                     testUser = res.user.id
+                    return
             "deleting test user" :
                 topic : () ->
                     xfuse.delete "/user/" + testUser, @callback
@@ -106,6 +112,7 @@ vows.describe("xfuse.test")
                 "should not get any errors" : (err, res) ->
                     assert.isNull err
                     assert.include res, "success"
+                    return
                 "and the user should no longer exist" :
                     topic : () ->
                         xfuse.get "/user/" + testUser, @callback
@@ -116,4 +123,5 @@ vows.describe("xfuse.test")
                         assert.include err, "error"
                         assert.include err.error, "message"
                         assert.include err.error, "error_id"
+                        return
 .export(module)
