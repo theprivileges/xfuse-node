@@ -4,7 +4,7 @@
   "private": true,
   "description": "a node module to interact with xfuse, the memberfuse api.",
   "tags": ["memberfuse", "avectra", "xfuse", "social network", "restful"],
-  "version": "0.0.8",
+  "version": "0.1.0",
   "homepage": "http://wiki.avectra.com/MemberFuse_API",
   "licenses": [{
       "type": "MIT",

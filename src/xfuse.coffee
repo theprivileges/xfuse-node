@@ -4,7 +4,7 @@ copyright (c) 2012 Avectra, Inc.
 https = require 'https'
 qs = require 'querystring'
 
-exports.version = '0.0.8'
+exports.version = '0.1.0'
 
 apiToken = null
 siteUrl = null
