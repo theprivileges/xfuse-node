@@ -15,7 +15,11 @@ class XFuse
         if typeof postData == 'function'
             callback = postData
             postData = {}
-        
+        ###
+        Check if everything is set up
+        ###
+        @isSetUp(method, url, postData, callback)
+
         url = apiUrl + @.cleanUrl url
         @callback = callback
         @postData = JSON.stringify postData 
@@ -36,6 +40,16 @@ class XFuse
 
         return @
 
+    isSetUp : (method, url, postData, callback) ->
+        if apiToken == null 
+            return callback { message : "xfuse needs an API Token" }, null
+        if siteUrl == null
+            return callback { message : "xfuse needs the address to memberfuse community" }, null
+        if typeof url != 'string'
+            return callback { message : "xfuse requires url to be a string" }, null
+        if typeof postData != 'object'
+            return callback { message : "Data must be in Object form" }, null
+        return
     cleanUrl : (url) ->
         if url.charAt(0) != '/'
             url = '/' + url
@@ -135,15 +149,6 @@ exports.get = (url, params, callback) ->
     if typeof params == 'function'
         callback = params
         params = null
-
-    if typeof url != 'string'
-        return callback { message : 'Url must be a string' }, null
-
-    if apiToken == null
-        return callback { message : 'XFuse needs an API Token' }, null
-
-    if siteUrl == null
-        return callback { message : 'XFuse needs to know to know the address to the memberfuse site'}, null
     
     if params
         url += '?' + qs.stringify params
@@ -151,26 +156,14 @@ exports.get = (url, params, callback) ->
     new XFuse 'GET', url, callback
 
 exports.post = (url, postData, callback) ->
-    if typeof url != 'string' 
-        return callback { message : 'Url must be a string' }, null
-
-    if typeof postData != 'object'
-        return callback { message : 'POST data must be in the form of an object' }, null
 
     new XFuse 'POST', url, postData, callback
 
 exports.put = (url, putData, callback) ->
-    if typeof url != 'string'
-        return callback { message : 'Url must be a string' }, null
-
-    if typeof putData != 'object'
-        return callback { message : 'PUT data must be in the form of an object' }, null
 
     new XFuse 'PUT', url, putData, callback
 
 exports.delete = (url, callback) ->
-    if typeof url != 'string'
-        return callback { message : 'Url must be a string'}, null
     
     new XFuse 'DELETE', url, callback
 
