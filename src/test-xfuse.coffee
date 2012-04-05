@@ -107,7 +107,7 @@ vows.describe("xfuse.test")
                     return
             "deleting test user" :
                 topic : () ->
-                    xfuse.delete "/user/" + testUser, @callback
+                    xfuse.del "/user/" + testUser, @callback
                     return
                 "should not get any errors" : (err, res) ->
                     assert.isNull err
