@@ -27,6 +27,7 @@ class XFuse
         @options = @options || {}
 
         @options.host = siteUrl
+        @options.hostname = siteUrl
         @options.auth = apiToken  + ':'
         @options.method = method
         @options.path    = url
@@ -144,6 +145,9 @@ class XFuse
         req.on 'error', (e) =>
             @callback e, null
             return
+        req.setHeader 'Content-Type', 'application/json'
+        req.setHeader 'Content-Length', 0
+        req.end()
         return
 exports.get = (url, params, callback) ->
     if typeof params == 'function'
@@ -163,7 +167,7 @@ exports.put = (url, putData, callback) ->
 
     new XFuse 'PUT', url, putData, callback
 
-exports.delete = (url, callback) ->
+exports.del = (url, callback) ->
     
     new XFuse 'DELETE', url, callback
 
