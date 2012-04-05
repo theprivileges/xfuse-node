@@ -131,7 +131,7 @@ copyright (c) 2012 Avectra, Inc.
       },
       "deleting test user": {
         topic: function() {
-          xfuse["delete"]("/user/" + testUser, this.callback);
+          xfuse.del("/user/" + testUser, this.callback);
         },
         "should not get any errors": function(err, res) {
           assert.isNull(err);
