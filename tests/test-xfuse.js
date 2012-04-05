@@ -20,6 +20,10 @@ copyright (c) 2012 Avectra, Inc.
 
   testUser = '';
 
+  /*
+  Because DELETE is a soft-delete some tests may fail when the randUID has been used before
+  */
+
   randUID = Math.floor(Math.random() * 501);
 
   /*
@@ -127,26 +131,25 @@ copyright (c) 2012 Avectra, Inc.
                               Saving the id of the test user, so we can delete it on the next test
           */
           testUser = res.user.id;
-        }
-      },
-      "deleting test user": {
-        topic: function() {
-          xfuse.del("/user/" + testUser, this.callback);
         },
-        "should not get any errors": function(err, res) {
-          assert.isNull(err);
-          assert.include(res, "success");
-        },
-        "and the user should no longer exist": {
+        "deleting test user": {
           topic: function() {
-            xfuse.get("/user/" + testUser, this.callback);
+            xfuse.del("/user/" + testUser, this.callback);
           },
-          "should get user doesn't exist": function(err, res) {
-            assert.isNull(res);
-            assert.isNotNull(err);
-            assert.include(err, "error");
-            assert.include(err.error, "message");
-            assert.include(err.error, "error_id");
+          "should not get any errors": function(err, res) {
+            assert.isNull(err);
+            assert.include(res, "user");
+            assert.equal(res.user.message, "Deleted the user successfully.");
+          },
+          "and the user should no longer exist": {
+            topic: function() {
+              xfuse.get("/user/" + testUser, this.callback);
+            },
+            "should get user doesn't exist": function(err, res) {
+              assert.isNull(res);
+              assert.isNotNull(err);
+              assert.include(err, "message");
+            }
           }
         }
       }
