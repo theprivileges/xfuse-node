@@ -48,14 +48,14 @@ copyright (c) 2012 Avectra, Inc.
         return xfuse.setApiToken(null);
       },
       "API Token should be null": function(xfuse) {
-        return assert.isNull(xfuse.getApiToken());
+        assert.isNull(xfuse.getApiToken());
       }
     }
   }).addBatch({
     "When accessing xfuse": {
       topic: function() {
         xfuse.setApiToken(null);
-        return xfuse.setsiteUrl(null);
+        xfuse.setsiteUrl(null);
       },
       "with no api token": {
         "and looking for data": {
@@ -64,7 +64,7 @@ copyright (c) 2012 Avectra, Inc.
           },
           "should get an error": function(err, res) {
             assert.isNotNull(err);
-            return assert.include(err, "message");
+            assert.include(err, "message");
           }
         }
       }
@@ -99,7 +99,7 @@ copyright (c) 2012 Avectra, Inc.
           assert.isNull(err);
           assert.include(res, "user");
           assert.include(res.user, "id");
-          return assert.equal('20', res.user.id, "user id should be valid");
+          assert.equal('20', res.user.id, "user id should be valid");
         }
       },
       "updating an existing user": {
@@ -109,7 +109,7 @@ copyright (c) 2012 Avectra, Inc.
         "response should be valid": function(err, res) {
           assert.isNull(err);
           assert.include(res, "user");
-          return assert.equal(putData.external_id, res.user.external_id, "new external id should match");
+          assert.equal(putData.external_id, res.user.external_id, "new external id should match");
         }
       },
       "inserting a new user": {
@@ -126,7 +126,7 @@ copyright (c) 2012 Avectra, Inc.
           /*
                               Saving the id of the test user, so we can delete it on the next test
           */
-          return testUser = res.user.id;
+          testUser = res.user.id;
         }
       },
       "deleting test user": {
@@ -135,7 +135,7 @@ copyright (c) 2012 Avectra, Inc.
         },
         "should not get any errors": function(err, res) {
           assert.isNull(err);
-          return assert.include(res, "success");
+          assert.include(res, "success");
         },
         "and the user should no longer exist": {
           topic: function() {
@@ -146,7 +146,7 @@ copyright (c) 2012 Avectra, Inc.
             assert.isNotNull(err);
             assert.include(err, "error");
             assert.include(err.error, "message");
-            return assert.include(err.error, "error_id");
+            assert.include(err.error, "error_id");
           }
         }
       }
