@@ -11,6 +11,9 @@ mfzSite = 'mycompany.labs.memberfuse.com'
 
 testUser = ''
 
+###
+Because DELETE is a soft-delete some tests may fail when the randUID has been used before
+###
 randUID = Math.floor Math.random() * 501
 
 ###
@@ -105,23 +108,22 @@ vows.describe("xfuse.test")
                     ###
                     testUser = res.user.id
                     return
-            "deleting test user" :
-                topic : () ->
-                    xfuse.del "/user/" + testUser, @callback
-                    return
-                "should not get any errors" : (err, res) ->
-                    assert.isNull err
-                    assert.include res, "success"
-                    return
-                "and the user should no longer exist" :
+                "deleting test user" :
                     topic : () ->
-                        xfuse.get "/user/" + testUser, @callback
+                        xfuse.del "/user/" + testUser, @callback
                         return
-                    "should get user doesn't exist" : (err, res) ->
-                        assert.isNull res
-                        assert.isNotNull err
-                        assert.include err, "error"
-                        assert.include err.error, "message"
-                        assert.include err.error, "error_id"
+                    "should not get any errors" : (err, res) ->
+                        assert.isNull err
+                        assert.include res, "user"
+                        assert.equal res.user.message, "Deleted the user successfully."
                         return
+                    "and the user should no longer exist" :
+                        topic : () ->
+                            xfuse.get "/user/" + testUser, @callback
+                            return
+                        "should get user doesn't exist" : (err, res) ->
+                            assert.isNull res
+                            assert.isNotNull err
+                            assert.include err, "message"
+                            return
 .export(module)
