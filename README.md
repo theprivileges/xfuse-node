@@ -1,5 +1,13 @@
 # Node Package for Memberfuse's API
 
+## Usage ##
+
+## Test ##
+Tests were written using [Vows](http://vowsjs.org/).
+
+Run tests:
+> npm test
+
 ## LICENSE ##
 copyright (c) 2012 Avectra, Inc
 
