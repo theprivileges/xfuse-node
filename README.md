@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/theprivileges/xfuse-node.png)](http://travis-ci.org/theprivileges/xfuse-node)
 # Node Package for Memberfuse's API
 
 ## Usage ##
